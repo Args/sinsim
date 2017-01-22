@@ -1,0 +1,101 @@
+<?php if (!defined('THINK_PATH')) exit();?><!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+  <title>添加机器</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/service/Public/css/bootstrap.min.css">
+  <script type='text/javascript' src='/service/Public/js/vue.js'></script>
+  <script type='text/javascript' src='/service/Public/js/jquery-3.1.1.min.js'></script>
+
+</head>
+<body>
+<div class="container" id="app" style="margin-top: 15px">
+  <div class="jumbotron">
+    <h1 style="text-align: center">添加机器</h1>
+  </div>
+  <form class="form-horizontal" role="form" id="form">
+    <div class="form-group">
+      <label class="control-label col-sm-2" >设备ID:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" v-model="registerModel.device_id" placeholder="输入设备ID" style="height: 48px">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" >设备名称:</label>
+      <div class="col-sm-10">
+        <!--<input type="text" class="form-control" v-model="registerModel.device_name" placeholder="输入设备名称" style="height: 48px;float:right">-->
+        <select class="form-control" v-model="registerModel.device_name" style="float:right;width: 100%; height: 48px">
+          <option v-for="option in options" v-bind:value="option.value">
+            {{ option.text }}
+          </option>
+        </select>
+
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">设备描述:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" v-model="registerModel.device_des" placeholder="输入设备描述" style="height: 48px">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">设备出厂日期:</label>
+      <div class="col-sm-10">
+        <input type="date" class="form-control" v-model="registerModel.device_production" placeholder="输入出厂日期" style="height: 48px">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10" style="text-align: right">
+        <button type="button" class="btn btn-primary" v-on:click="register" style="width: 100px; height: 36px">提交</button>
+      </div>
+    </div>
+  </form>
+
+</div>
+
+</body>
+</html>
+<script>
+//  window.onload = function () {
+//    app.options.push({text:"hello", value:'4'});
+//  }
+  var app = new Vue({
+    el: '#app',
+    data: {
+      registerUrl: "<?php echo U('machine/ajaxAdd');?>",
+      registerModel: {
+        device_id: '',
+        device_name: '',
+        device_des: '',
+        device_production: ''
+      },
+      //机器名称，即种类即名称
+      options: [
+        {text:"平绣", value:'1'},
+        {text:"特种系列", value:'2'},
+        {text:"毛巾绣系列", value:'3'}
+      ]
+    },
+    methods: {
+      register: function() {
+        var vm = this
+        $.ajax({
+          url: vm.registerUrl,
+          type: 'POST',
+          dataType: 'json',
+          data: vm.registerModel,
+          success: function(data) {
+            if(data.status) {
+              window.location.href ="<?php echo U('machine/index');?>";
+              
+            } else {
+              alert(data.info);
+            }
+          },
+        })
+      },
+    }
+
+  })
+</script>

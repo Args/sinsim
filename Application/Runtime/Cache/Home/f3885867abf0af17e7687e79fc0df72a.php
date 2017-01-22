@@ -1,0 +1,602 @@
+<?php if (!defined('THINK_PATH')) exit();?><!DOCTYPE html>
+<html lang="zh-CN" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>调试项仓库</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/service/Public/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/service/Public/css/bootstrap-switch.min.css">
+    <script type='text/javascript' src='/service/Public/js/vue.js'></script>
+    <script type='text/javascript' src='/service/Public/js/jquery-3.1.1.min.js'></script>
+    <script type='text/javascript' src='/service/Public/js/bootstrap.min.js'></script>
+
+  </head>
+  <body>
+    <div class="page-header container" id="storage">
+      <div class="nav navbar-nav navbar-left">
+        <h1>调试项仓库</h1>
+      </div>
+      <div class="nav navbar-nav navbar-right">
+        <button class="btn btn-primary" v-on:click="tryCreatesStorage" style="height: 44px; margin-top: 25px; margin-right: 15px">
+          <span class="glyphicon glyphicon-plus" style="padding-right: 5px"></span>创建库
+        </button>
+      </div>
+      <!--Add storage Modal -->
+      <div class="modal fade" id="addStorage" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header" style="padding:35px 50px;">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h2>增加库</h2>
+            </div>
+            <div class="modal-body" style="padding:40px 50px;">
+              <form role="form">
+                <div class="form-group">
+                  <label >库名</label>
+                  <input type="text" class="form-control" placeholder="输入库名称" v-model="storageName">
+                </div>
+                <button type="submit" class="btn btn-success btn-block" v-on:click="addStorage"><span class="glyphicon glyphicon-saved"></span>创建</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <div id="basic" class="container">
+    <div class="panel panel-primary">
+      <div class="panel-heading" style="width: 100%; text-align: left; border-radius: 2px; font-size: 24px" v-on:click="showOrHideItems">基本信息库
+        <span class="badge" style="vertical-align: middle">{{basicItems.length}}</span>
+        <div style="display: inline" class="nav navbar-nav navbar-right">
+          <button class="btn btn-danger" v-on:click="tryAddBasic(event)" style="margin-right: 10px">
+            <span class="glyphicon glyphicon-plus-sign"></span>
+          </button>
+        </div>
+
+        <!-- TODO:后期加上模板的disable/enable功能 -->
+        <!--<div style="display: inline" class="nav navbar-nav navbar-right">-->
+          <!--<input type="checkbox" checked data-size="small" data-on-text="启用" data-off-text="禁用">-->
+        <!--</div>-->
+      </div>
+      <div class="table-responsive" v-show="toggle">
+        <table class="table table-hover table-bordered" align="center" style="table-layout: fixed">
+          <thead>
+          <tr>
+            <th width="15%" style="font-size: 15px; text-align: center">项目 ID</th>
+            <th style="font-size: 15px; text-align: center">项目名称</th>
+            <th width="5%" style="text-align: center">编辑</th>
+            <th width="5%" style="text-align: center">删除</th>
+          </tr>
+          </thead>
+          <tbody >
+          <tr v-for="(item, index) in basicItems">
+            <td  style="height: 32px; line-height: 32px;text-align: center">{{item.basic_item_id}}</td>
+            <td  style="height: 32px; line-height: 32px;text-align: center">{{item.basic_item_name}}</td>
+            <td  style="height: 32px; line-height: 32px">
+              <div class="text-center" >
+                <button class="btn btn-primary btn-sm" v-on:click="tryModifyBasic(item.basic_item_id,item.basic_item_name)">
+                  <span class="glyphicon glyphicon-pencil"></span>
+                </button>
+              </div>
+            </td>
+            <td  style="height: 32px; line-height: 32px">
+              <div class="text-center" >
+                <button class="btn btn-danger btn-sm" v-on:click="tryDeleteBasic(item.basic_item_id,item.basic_item_name)">
+                  <span class="glyphicon glyphicon-trash"></span>
+                </button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <p v-show="basicItems.length == 0" style="line-height: 100px; text-align: center; color: darkgray">暂无基本信息项，请创建~~~</p>
+    </div>
+    <!--Add item Modal -->
+    <div class="modal fade" id="addBasicModal" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header" style="padding:35px 50px;">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h2>增加基本信息项</h2>
+          </div>
+          <div class="modal-body" style="padding:40px 50px;">
+            <form role="form">
+              <div class="form-group">
+                <label >项名</label>
+                <input type="text" class="form-control" placeholder="输入名称" v-model="basicName">
+              </div>
+              <div class="form-group">
+                <label>备注</label>
+                <input type="text" class="form-control" placeholder="输入备注" v-model="basicMark">
+              </div>
+              <button type="submit" class="btn btn-success btn-block" v-on:click="addBasic"><span class="glyphicon glyphicon-saved"></span>创建</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--modify item Modal -->
+    <div class="modal fade" id="modifyBasicModal" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header" style="padding:35px 50px;">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h2>修改基本信息项</h2>
+          </div>
+          <div class="modal-body" style="padding:40px 50px;">
+            <form role="form">
+              <div class="form-group">
+                <label >项名</label>
+                <input type="text" class="form-control" placeholder="输入需要修改的名称" v-model="modifyBasicName">
+              </div>
+              <div class="form-group">
+                <label>备注</label>
+                <input type="text" class="form-control" placeholder="输入备注" v-model="modifyBasicMark">
+              </div>
+              <button type="submit" class="btn btn-success btn-block" v-on:click="modifyBasic"><span class="glyphicon glyphicon-saved"></span>保存修改</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Delete item Modal -->
+    <div class="modal fade" id="deleteBasicModal" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header" style="padding:35px 50px;">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h2>删除基本信息项</h2>
+          </div>
+          <div class="modal-body" style="padding:40px 50px;">
+            <!-- 加上<form>标签可以使得modal窗口在点击按钮都自动dismiss-->
+            <form role="form">
+             <h4>确认删除 <b>{{deleteBasicName}}</b> 吗？</h4>
+              <button type="submit" style="margin-top: 50px" class="btn btn-danger btn-block" v-on:click="deleteBasic"><span class="glyphicon glyphicon-trash" style="margin-right: 5px"></span>删除</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="others" class="container">
+    <ul style="margin-left: 0px;padding-left: 0px;">
+      <li v-for="(group, index) in groups" style="list-style-type:none; ">
+        <div class="panel panel-primary">
+          <div class="panel-heading" style="width: 100%; text-align: left; border-radius: 2px; font-size: 24px"  v-on:click="showOrHideItems(index)">{{group.name}}
+            <span class="badge" style="vertical-align: middle" v-if="group.items.length >0 ">{{group.items.length}}</span>
+            <span class="badge" style="vertical-align: middle" v-else>0</span>
+            <div style="display: inline" class="nav navbar-nav navbar-right">
+              <button class="btn btn-danger" v-on:click="tryAdd(group.type_id, event)" style="margin-right: 10px">
+                <span class="glyphicon glyphicon-plus-sign"></span>
+              </button>
+            </div>
+          </div>
+          <div class="table-responsive" v-show="showStatus[index]">
+            <table class="table table-hover table-bordered" v-show="group.items.length > 0" align="center" style="table-layout: fixed">
+              <thead>
+              <tr>
+                <th width="15%" style="font-size: 15px;text-align: center">项目 ID</th>
+                <th style="font-size: 15px;text-align: center">项目名称</th>
+                <th width="5%" style="text-align: center">编辑</th>
+                <th width="5%" style="text-align: center">删除</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="(item, index) in group.items">
+                <td  style="height: 32px; line-height: 32px;text-align: center">{{item.item_id}}</td>
+                <td  style="height: 32px; line-height: 32px;text-align: center">{{item.item_name}}</td>
+                <td  style="height: 32px; line-height: 32px">
+                  <div class="text-center" >
+                    <button class="btn btn-primary btn-sm" v-on:click="tryModifyItem(item.item_id,item.item_name)">
+                      <span class="glyphicon glyphicon-pencil"></span>
+                    </button>
+                  </div>
+                </td>
+                <td  style="height: 32px; line-height: 32px">
+                  <div class="text-center" >
+                    <button class="btn btn-danger btn-sm" v-on:click="tryDeleteItem(item.item_id, item.item_name)">
+                      <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <p v-show="showStatus[index] && group.items.length == 0" style="line-height: 100px; text-align: center; color: darkgray">暂无{{group.name}}信息项，请创建~~~</p>
+        </div>
+      </li>
+    </ul>
+    <!--Add item Modal -->
+    <div class="modal fade" id="addItemModal" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header" style="padding:35px 50px;">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h2>增加信息项</h2>
+          </div>
+          <div class="modal-body" style="padding:40px 50px;">
+            <form role="form">
+              <div class="form-group">
+                <label >项名</label>
+                <input type="text" class="form-control" placeholder="输入项目名称" v-model="addItemName">
+              </div>
+              <div class="form-group">
+                <label>备注</label>
+                <input type="text" class="form-control" placeholder="输入备注" v-model="addItemMark">
+              </div>
+              <button type="submit" class="btn btn-success btn-block" v-on:click="addItem"><span class="glyphicon glyphicon-saved"></span>创建</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Delete item Modal -->
+    <div class="modal fade" id="deleteItemModal" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header" style="padding:35px 50px;">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h2>删除信息项</h2>
+          </div>
+          <div class="modal-body" style="padding:40px 50px;">
+            <!-- 加上<form>标签可以使得modal窗口在点击按钮都自动dismiss-->
+            <form role="form">
+              <h4>确认删除 <b>{{deleteItemName}}</b> 吗？</h4>
+              <button type="submit" style="margin-top: 50px" class="btn btn-danger btn-block" v-on:click="deleteItem"><span class="glyphicon glyphicon-trash" style="margin-right: 5px"></span>删除</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--modify item Modal -->
+    <div class="modal fade" id="modifyItemModal" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header" style="padding:35px 50px;">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h2>修改信息项</h2>
+          </div>
+          <div class="modal-body" style="padding:40px 50px;">
+            <form role="form">
+              <div class="form-group">
+                <label >项名</label>
+                <input type="text" class="form-control" placeholder="输入需要修改的名称" v-model="modifyItemName">
+              </div>
+              <div class="form-group">
+                <label>备注</label>
+                <input type="text" class="form-control" placeholder="输入备注" v-model="modifyItemMark">
+              </div>
+              <button type="submit" class="btn btn-success btn-block" v-on:click="modifyItem"><span class="glyphicon glyphicon-saved"></span>保存修改</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </body>
+</html>
+<script>
+
+  //TODO:后期加上模板的disable/enable功能
+  //  $(function(argument) {
+  //    $('[type="checkbox"]').bootstrapSwitch();
+  //  })
+  window.onload = function () {
+//      for(var i=0; i < app2.groups.length; i++) {
+//          app2.showStatus[i] = true;
+//      }
+      //通过数组直接赋值，无法更新UI
+      for(var i=0; i < app2.groups.length; i++) {
+          app2.$set(app2.showStatus,i,!app2.showStatus[i]);
+      }
+
+  }
+
+  function disableParentEvent(e){
+      //如果传入了事件对象.那么就是非IE浏览器
+      if (e && e.stopPropagation) {
+          //因此它支持W3C的stopPropation()方法
+          e.stopPropagation();
+      }
+      else {
+          //否则,我们得使用IE的方式来取消事件冒泡
+          window.event.cancelBubble = true;
+      }
+  }
+
+  var app = new Vue({
+    el: '#basic',
+    data: {
+      basicItems:eval('(<?php echo json_encode($basicItems);?>)'),
+      toggle: true,
+      addBasicUrl: "<?php echo U('install/ajaxAddBasicItem');?>",
+      modifyBasicUrl: "<?php echo U('install/ajaxModifyBasicItem');?>",
+      deleteBasicUrl: "<?php echo U('install/ajaxDeleteBasicItem');?>",
+      //for add basic item
+      basicName: '',
+      basicMark: '',
+      //For modify basic item
+      modifyBasicID:'',
+      modifyBasicName: '',
+      modifyBasicMark: '',
+      //for delete
+      deleteBasicID:'',
+      deleteBasicName: ''
+    },
+    methods: {
+      showOrHideItems:function () {
+        app.toggle = !app.toggle;
+      },
+      tryAddBasic: function (e) {
+        disableParentEvent(e);
+        $("#addBasicModal").modal();
+      },
+      addBasic: function () {
+        if(app.basicName == null) {
+          alert("项目名为空！");
+        } else {
+          $.ajax({
+            //必须在Ajax中进行URL的组装，否则app2.content等参数会为空或者未定义
+            url: this.addBasicUrl+ "?name=" + app.basicName + "&mark=" + app.basicMark ,
+            type: 'GET',
+            success: function(data) {
+              if(data.status) {
+
+              } else {
+                alert(data.info);
+              }
+            },
+            error: function(data) {
+              alert(data);
+            }
+          })
+        }
+      },
+
+      tryModifyBasic: function (id,content) {
+        app.modifyBasicID = id;
+        app.modifyBasicName = content;
+
+        $("#modifyBasicModal").modal();
+      },
+
+      modifyBasic: function () {
+        if(app.basicName == null) {
+          alert("项目名为空！");
+        } else {
+          $.ajax({
+            //必须在Ajax中进行URL的组装，否则app2.content等参数会为空或者未定义
+            url: this.modifyBasicUrl+ "?id=" + app.modifyBasicID + "&name=" + app.modifyBasicName ,
+            type: 'GET',
+            success: function(data) {
+              if(data.status) {
+
+              } else {
+                alert(data.info);
+              }
+            },
+            error: function(data) {
+              alert(data);
+            }
+          })
+        }
+      },
+
+      tryDeleteBasic: function (id, name) {
+        app.deleteBasicID = id;
+        app.deleteBasicName = name;
+        $("#deleteBasicModal").modal();
+      },
+      deleteBasic: function () {
+        if(app.deleteBasicID == null) {
+          alert("删除项目为空！");
+        } else {
+          $.ajax({
+            //必须在Ajax中进行URL的组装，否则app2.content等参数会为空或者未定义
+            url: this.deleteBasicUrl+ "?id=" + app.deleteBasicID,
+            type: 'GET',
+            success: function(data) {
+              if(data.status) {
+
+              } else {
+                alert(data.info);
+              }
+//              $("#deleteBasicModal")
+            },
+            error: function(data) {
+              alert(data);
+            }
+          })
+        }
+      }
+    }
+  })
+
+  var app2 = new Vue({
+      el: '#others',
+      data: {
+//          groups:[
+//              {'name':"平绣", 'items':[{"item_id":"1", "item_type":"1","item_name":"机器摆放至预定位置，安装地脚盘，调整机器水平，清洁机器"},{"item_id":"2", "item_type":"1","item_name":"与客户清点工具箱内配件"}]},
+//              {'name':"特种系列",'items':[{"item_id":"17", "item_type":"2","item_name":"接好气路，调整过滤器气压，解开金片、绳绣装置机械锁"}]},
+//              {'name':"毛巾绣",'items':[{"item_id":"21", "item_type":"3","item_name":"查看主轴位置35°，换色箱位置正常再开机"}]},
+//              {'name':"亮片绣",'items':[{"item_id":"", "item_type":"4","item_name":""}]},
+//          ]
+        groups:eval('('+'<?php echo json_encode($otherItems);?>'+')'),
+        showStatus:[],
+        //Delete
+        deleteItemId: '',
+        deleteItemName: '',
+        //Modify
+        modifyItemId: '',
+        modifyItemName: '',
+        modifyItemMark: '',
+
+        //add
+        //Modify
+        addItemGroupId:'',
+        addItemName: '',
+        addItemMark: '',
+
+        //URL
+        addItemUrl: "<?php echo U('install/ajaxAddItem');?>",
+        modifyItemUrl: "<?php echo U('install/ajaxModifyItem');?>",
+        deleteItemUrl: "<?php echo U('install/ajaxDeleteItem');?>",
+      },
+      methods: {
+        //貌似delete为关键字，不能被用为实践函数
+//        delete: function (id) {
+//          alert(id);
+//        },
+        tryDeleteItem: function (id, name) {
+          app2.deleteItemId = id;
+          app2.deleteItemName = name;
+          $("#deleteItemModal").modal();
+        },
+        deleteItem: function () {
+          if(app2.deleteItemId == null) {
+            alert("删除项目为空！");
+          } else {
+            $.ajax({
+              //必须在Ajax中进行URL的组装，否则app2.content等参数会为空或者未定义
+              url: this.deleteItemUrl+ "?id=" + app2.deleteItemId,
+              type: 'GET',
+              success: function(data) {
+                if(data.status) {
+
+                } else {
+                  alert(data.info);
+                }
+//              $("#deleteBasicModal")
+              },
+              error: function(data) {
+                alert(data);
+              }
+            })
+          }
+          //reset the values
+          app2.deleteItemId = "";
+          app2.deleteItemName = "";
+        },
+
+        tryModifyItem: function (id, name) {
+          app2.modifyItemName = name;
+          app2.modifyItemId = id;
+          $("#modifyItemModal").modal();
+        },
+
+        modifyItem: function () {
+          if(app2.modifyItemName == null) {
+            alert("项目名为空！");
+          } else {
+            $.ajax({
+              //必须在Ajax中进行URL的组装，否则app2.content等参数会为空或者未定义
+              url: this.modifyItemUrl+ "?id=" + app2.modifyItemId + "&name=" + app2.modifyItemName ,
+              type: 'GET',
+              success: function(data) {
+                if(data.status) {
+
+                } else {
+                  alert(data.info);
+                }
+              },
+              error: function(data) {
+                alert(data);
+              }
+            })
+          }
+          //reset the values
+          app2.modifyItemId= "";
+          app2.modifyItemName= "";
+          app2.modifyItemMark= ''
+        },
+
+        tryAdd: function (groupID, e) {
+          disableParentEvent(e);
+          //alert(groupID);
+          app2.addItemGroupId = groupID;
+          $("#addItemModal").modal();
+        },
+
+        addItem: function () {
+          if(app2.addItemName == null) {
+            alert("项目名为空！");
+          } else {
+            $.ajax({
+              //必须在Ajax中进行URL的组装，否则app2.content等参数会为空或者未定义
+              url: this.addItemUrl+ "?typeId=" + app2.addItemGroupId + "&name=" + app2.addItemName + "&mark=" + app2.addItemMark ,
+              type: 'GET',
+              success: function(data) {
+                if(data.status) {
+
+                } else {
+                  alert(data.info);
+                }
+              },
+              error: function(data) {
+                alert(data);
+              }
+            })
+          }
+        app2.addItemGroupId = '';
+        app2.addItemName = '';
+        app2.addItemMark = '';
+        },
+        showOrHideItems: function (index) {
+            app2.$set(app2.showStatus,index,!app2.showStatus[index]);
+        }
+      }
+    })
+
+  var app3 = new Vue({
+    el:'#storage',
+    data: {
+      storageName: '',
+      addTypeURL:"<?php echo U('install/ajaxAddType');?>"
+    },
+    methods: {
+      tryCreatesStorage: function () {
+        $("#addStorage").modal();
+      },
+      addStorage: function () {
+        if( app3.storageName == '') {
+          alert("库名称为空！");
+        } else {
+          $.ajax({
+            //必须在Ajax中进行URL的组装，否则app2.content等参数会为空或者未定义
+            url: this.addTypeURL+ "?name=" + app3.storageName,
+            type: 'GET',
+            success: function(data) {
+              if(data.status) {
+
+              } else {
+                alert(data.info);
+              }
+            },
+            error: function(data) {
+              alert(data);
+            }
+          })
+        }
+        app3.storageName = '';
+      }
+    }
+  })
+
+</script>

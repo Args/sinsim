@@ -1,0 +1,83 @@
+{
+  "name": "vue-upload-component",
+  "description": "Vue.js file upload component, Support for multiple file uploads, progress, html5, html4, support ie9",
+  "version": "0.3.9",
+  "author": {
+    "name": "LianYue"
+  },
+  "scripts": {
+    "dev": "webpack-dev-server --inline --hot",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules --config  webpack.config.build.min.js && cross-env NODE_ENV=production webpack --progress --hide-modules --config  webpack.config.build.js && cross-env NODE_ENV=production webpack --progress --hide-modules --config  webpack.config.js"
+  },
+  "main": "dist/vue-upload-component.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lian-yue/vue-upload-component.git"
+  },
+  "keywords": [
+    "vue.js",
+    "file",
+    "put",
+    "upload",
+    "uploads",
+    "multiple",
+    "component",
+    "vue-component",
+    "vue-upload-component",
+    "vue-file-upload",
+    "vue-file-upload-component"
+  ],
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/lian-yue/vue-upload-component/issues"
+  },
+  "homepage": "https://github.com/lian-yue/vue-upload-component#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-core": "^6.0.0",
+    "babel-loader": "^6.0.0",
+    "babel-plugin-transform-runtime": "^6.0.0",
+    "babel-preset-es2015": "^6.0.0",
+    "babel-preset-stage-2": "^6.0.0",
+    "babel-runtime": "^6.0.0",
+    "cross-env": "^1.0.6",
+    "css-loader": "^0.23.0",
+    "file-loader": "^0.8.4",
+    "json-loader": "^0.5.4",
+    "url-loader": "^0.5.7",
+    "vue": "^1.0.26",
+    "vue-hot-reload-api": "^1.2.0",
+    "vue-html-loader": "^1.0.0",
+    "vue-loader": "^8.2.1",
+    "vue-style-loader": "^1.0.0",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.0"
+  },
+  "gitHead": "f1f9732a2777448dfb5b432d78c7f287e029590f",
+  "_id": "vue-upload-component@0.3.9",
+  "_shasum": "004715e828d5e9513a9358f5b28d3079e6f9354c",
+  "_from": "vue-upload-component@",
+  "_npmVersion": "3.10.5",
+  "_nodeVersion": "4.2.1",
+  "_npmUser": {
+    "name": "lianyue",
+    "email": "admin@lianyue.org"
+  },
+  "dist": {
+    "shasum": "004715e828d5e9513a9358f5b28d3079e6f9354c",
+    "tarball": "https://registry.npmjs.org/vue-upload-component/-/vue-upload-component-0.3.9.tgz"
+  },
+  "maintainers": [
+    {
+      "name": "lianyue",
+      "email": "admin@lianyue.org"
+    }
+  ],
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/vue-upload-component-0.3.9.tgz_1481539031854_0.09740688791498542"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/vue-upload-component/-/vue-upload-component-0.3.9.tgz",
+  "readme": "ERROR: No README data found!"
+}

@@ -1,0 +1,18 @@
+[ 2016-11-26T15:34:10+08:00 ] 127.0.0.1 /service/U('index/machine_manager')
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000120s ]
+INFO: [ app_init ] --END-- [ RunTime:0.001108s ]
+ERR: 无法加载模块:U('index
+
+[ 2016-11-26T15:35:56+08:00 ] 127.0.0.1 /service/U('index/machine_manager')
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000102s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000951s ]
+ERR: 无法加载模块:U('index
+
+[ 2016-11-26T15:38:33+08:00 ] 127.0.0.1 /service/U('index/machine_manager')
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000101s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000953s ]
+ERR: 无法加载模块:U('index
+

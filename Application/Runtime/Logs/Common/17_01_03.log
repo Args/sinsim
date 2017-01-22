@@ -1,0 +1,42 @@
+[ 2017-01-03T16:02:54+08:00 ] 127.0.0.1 /service/machine/ajaxAdd
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000135s ]
+INFO: [ app_init ] --END-- [ RunTime:0.001247s ]
+ERR: 无法加载模块:Machine
+
+[ 2017-01-03T16:03:23+08:00 ] 127.0.0.1 /service/machine/ajaxAdd
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000100s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000915s ]
+ERR: 无法加载模块:Machine
+
+[ 2017-01-03T16:05:08+08:00 ] 127.0.0.1 /service/machine/ajaxAdd
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000102s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000948s ]
+ERR: 无法加载模块:Machine
+
+[ 2017-01-03T16:06:49+08:00 ] 127.0.0.1 /service/machine/ajaxAdd
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000125s ]
+INFO: [ app_init ] --END-- [ RunTime:0.001038s ]
+ERR: 无法加载模块:Machine
+
+[ 2017-01-03T16:08:46+08:00 ] 127.0.0.1 /service/machine/ajaxAdd
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000155s ]
+INFO: [ app_init ] --END-- [ RunTime:0.001371s ]
+ERR: 无法加载模块:Machine
+
+[ 2017-01-03T16:09:03+08:00 ] 127.0.0.1 /service/machine/add
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000098s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000909s ]
+ERR: 无法加载模块:Machine
+
+[ 2017-01-03T16:09:47+08:00 ] 127.0.0.1 /service/machine/ajaxAdd
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000127s ]
+INFO: [ app_init ] --END-- [ RunTime:0.001057s ]
+ERR: 无法加载模块:Machine
+

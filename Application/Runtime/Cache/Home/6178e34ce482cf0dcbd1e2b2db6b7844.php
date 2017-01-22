@@ -1,0 +1,281 @@
+<?php if (!defined('THINK_PATH')) exit();?><!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns="http://www.w3.org/1999/html" xmlns:v-show="http://www.w3.org/1999/xhtml"
+      xmlns:v-click="http://www.w3.org/1999/xhtml" xmlns:v-model="http://www.w3.org/1999/xhtml"
+      xmlns:vo-on="http://www.w3.org/1999/xhtml" xmlns:v-for="http://www.w3.org/1999/xhtml">
+<head>
+    <title>设备维修</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/service/Public/css/bootstrap.min.css">
+    <link type="text/css" href="/service/Public/css/mystyle.css" rel="stylesheet"/>
+    <script type="text/javascript" src="/service/Public/js/vue.js"></script>
+    <script type="text/javascript" src="/service/Public/js/jquery-3.1.1.min.js"></script>
+    <style>
+        table thead tr th {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        table tbody tr td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header" style="margin-top: 5px;">
+            <a class="sinsim-logo" href="#">SinSim</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <!-- <li><a href="#">Home</a></li> -->
+            <li><a href="<?php echo U('index/index');?>">客户管理</a></li>
+            <li><a href="<?php echo U('machine/index');?>">机器管理</a></li>
+            <li><a href="<?php echo U('install/index');?>">安装调试</a></li>
+            <li><a href="<?php echo U('maintain/index');?>">设备保养</a></li>
+            <li class="active"><a href="#">设备维修</a></li>
+            <li><a href="#">配件更换</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span>登录</a></li>
+        </ul>
+    </div>
+</nav>
+<div id="filterDiv">
+    <div class="container-fluid">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">筛选列表</h3>
+            </div>
+            <div class="panel-body">
+                <div class="well">
+                    <div class="row">
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label class="control-label">故障编号</label>
+                                <input type="text" v-model="filters.problem_id" placeholder="故障单编号"
+                                       class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">故障状态</label>
+                                <select v-model="filters.status_id" class="form-control">
+                                    <option v-for="status in statusOptions" v-bind:value="status.value">
+                                        {{ status.text }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label class="control-label">设备编号</label>
+                                <input type="text" v-model="filters.device_sn" placeholder="设备 ID"
+                                       class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">设备类型</label>
+                                <select v-model="filters.type_id" class="form-control">
+                                    <option v-for="type in deviceTypeOptions" v-bind:value="type.value">
+                                        {{ type.text }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label class="control-label">调试员</label>
+                                <input type="text" v-model="filters.service_staff_name" placeholder="调试员姓名"
+                                       class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">报修时间（大于）</label>
+                                <input type="date" v-model="filters.start_time" placeholder="选择开始时间"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label class="control-label">设备用户</label>
+                                <input type="text" v-model="filters.owner_name" placeholder="设备拥有者"
+                                       class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">报修时间（小于）</label>
+                                <input type="date" v-model="filters.end_time" placeholder="选择结束时间"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary" style="width: 100px; "
+                                        v-on:click="onSearch">筛选
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="problemDiv" class="container-fluid" style="margin-bottom: 15px">
+    <div class="panel panel-primary">
+        <div class="panel-heading panel-title">维修记录
+            <span class="badge" style="margin-left: 5px">{{problems.length}}</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" v-show="problems.length >= 0" align="center"
+                   style="table-layout: fixed;">
+                <thead>
+                <tr>
+                    <th>故障编号</th>
+                    <th>设备类型</th>
+                    <th>设备名称</th>
+                    <th>设备编号</th>
+                    <th>设备用户</th>
+                    <th>报修时间</th>
+                    <th>维修人员</th>
+                    <th>维修状态</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(list, index) in problems">
+                    <td style="vertical-align: middle;">
+                        <div v-on:click="problem_detail(index)" style="font-weight: bold" class="btn btn-link">
+                            {{list.problem_id}}
+                        </div>
+                    </td>
+                    <td style="vertical-align: middle;">{{list.type_name}}</td>
+                    <td style="vertical-align: middle;">{{list.device_des}}</td>
+                    <td style="vertical-align: middle;">{{list.device_sn}}</td>
+                    <td style="vertical-align: middle;">{{list.owner_name}}</td>
+                    <td style="vertical-align: middle;">
+                        <div v-if="list.report_time.indexOf('0000-00-00')>=0" style="color: red">
+                            <b>无</b>
+                            <!-- Date.parse(new Date(list.report_time))<=Date.parse(new Date('0000-00-00')) -->
+                        </div>
+                        <div v-else>
+                            {{list.report_time}}
+                        </div>
+                    </td>
+                    <td style="vertical-align: middle;">
+                        <div v-if="list.service_staff_name == null" style="color: red">
+                            <b>无</b>
+                        </div>
+                        <div v-else>
+                            {{list.service_staff_name}}
+                        </div>
+                    </td>
+
+                    <td style="vertical-align: middle;">
+                        <div v-if="list.status_id == 0 " style="color: red">
+                            {{list.status_name}}
+                        </div>
+                        <div v-else>
+                            {{list.status_name}}
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p v-show="problems.length == 0"
+           style="width: 100%; height: 200px; line-height: 200px; text-align: center; color: darkgray">暂无维修记录~~~</p>
+    </div>
+</div>
+
+</body>
+</html>
+<script>
+    function getData() {
+        $.ajax({
+            //searchContent后面必须直接跟“=”， 不然会出错
+            url: "<?php echo U('DeviceProblem/getData');?>",
+            type: 'GET',
+            success: function (data) {
+                if (data.status) {
+                    alert(data.info);
+                    app.problems = data.info;
+                } else {
+                    alert(data.info);
+                }
+            },
+            error: function (data) {
+                alert(data.info);
+            }
+        })
+    }
+    ;
+
+    window.onload = function () {
+        app.problems = JSON.parse('<?php echo json_encode($problems);?>');
+        appFilter.statusOptions = JSON.parse('<?php echo json_encode($allStatus);?>');
+        appFilter.deviceTypeOptions = JSON.parse('<?php echo json_encode($allDeviceType);?>');
+
+    };
+    var app = new Vue({
+        el: '#problemDiv',
+        data: {
+            problems: [],
+            problemModel: {
+                currentIndex: -1,
+            },
+            isCorrectTime: true,
+        },
+        methods: {
+            problem_detail: function (index) {
+                if (typeof(index) == "number") {
+                    this.problemModel.currentIndex = index;
+                }
+                window.location.href = "<?php echo U('DeviceProblem/AssignProblem');?>?index=" + this.problemModel.currentIndex;
+
+            },
+        }
+    });
+
+    var appFilter = new Vue({
+        el: '#filterDiv',
+        data: {
+            searchUrl: "<?php echo U('DeviceProblem/ajaxSearch');?>",
+            filters: {
+                problem_id: '',
+                status_id: '',
+                type_id: '',
+                device_sn: '',
+                owner_name: '',
+                service_staff_name: '',
+                start_time: '',
+                end_time: '',
+            },
+
+            statusOptions: [],
+            deviceTypeOptions: [],
+        },
+
+        methods: {
+            onSearch: function () {
+                //this.submitModel.problem_id = document.getElementById("problem_id").innerHTML;
+                $.ajax({
+                    url: this.searchUrl,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: this.filters,
+                    success: function (data) {
+                        if (data.status) {
+                            app.problems = data.info;
+                        } else {
+                            alert(data.info);
+                        }
+                    },
+                    error: function (data) {
+                        alert(data.info);
+                    }
+                })
+            },
+        },
+    });
+
+</script>
